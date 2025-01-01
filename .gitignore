@@ -1,0 +1,6 @@
+.env
+prompts/
+results/
+
+# python related 
+__pycache__/
