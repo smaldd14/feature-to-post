@@ -9,6 +9,8 @@ from src import config
 from src.schemas import Chapter, ChapterBreakdown, TweetThread
 
 system_prompt = config.load_prompt('system_prompt')
+feature_explanation_prompt = config.load_prompt('feature_explanation')
+enhance_audio_prompt = config.load_prompt('enhance_audio')
 
 class GeminiVideoProcessor:
     def __init__(self):
@@ -63,7 +65,7 @@ class GeminiVideoProcessor:
                 output_path.symlink_to(video_path)
             
             # Generate post from full video
-            results = await self.generate_post_from_video(video_file, duration)
+            results = await self.analyze_video(video_file, duration)
         
         # Save results
         results_data = {
@@ -105,18 +107,22 @@ class GeminiVideoProcessor:
             return config.load_prompt('feature_to_post_short')
         return config.load_prompt('feature_to_post_long')
 
-    async def generate_post_from_video(self, video_file, duration: float) -> TweetThread:
-        """Generate social media post from video"""        
+    async def analyze_video(self, video_file, duration: float) -> TweetThread:
+        """Analyze video"""        
         # Load appropriate prompt based on duration
         post_prompt = self.get_appropriate_prompt(duration)
         
-        print("Generating post from video...")
+        print("Analyzing video...")
+        # response = self.model.generate_content(
+        #     [video_file, system_prompt, post_prompt],
+        #     generation_config=genai.GenerationConfig(
+        #         response_mime_type="application/json",
+        #         response_schema=TweetThread
+        #     ),
+        #     request_options={"timeout": 600}
+        # )
         response = self.model.generate_content(
-            [video_file, system_prompt, post_prompt],
-            generation_config=genai.GenerationConfig(
-                response_mime_type="application/json",
-                response_schema=TweetThread
-            ),
+            [video_file, system_prompt, enhance_audio_prompt],
             request_options={"timeout": 600}
         )
 
