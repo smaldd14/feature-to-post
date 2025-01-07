@@ -122,7 +122,7 @@ class GeminiVideoProcessor:
         #     request_options={"timeout": 600}
         # )
         response = self.model.generate_content(
-            [video_file, system_prompt, enhance_audio_prompt],
+            [video_file, system_prompt, feature_explanation_prompt],
             request_options={"timeout": 600}
         )
 
